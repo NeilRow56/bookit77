@@ -10,5 +10,4 @@ const dbConnect = () => {
 		useUnifiedTopology: true,
 	});
 };
-
 export default dbConnect;
