@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import ClientOnly from './ClientOnly';
 import {
 	Box,
@@ -8,6 +8,7 @@ import {
 	Button,
 	Menu,
 	MenuButton,
+	Link,
 	MenuList,
 	MenuItem,
 	MenuDivider,
@@ -15,6 +16,7 @@ import {
 	useColorModeValue,
 	Stack,
 	Spacer,
+	Text,
 	useColorMode,
 	Center,
 } from '@chakra-ui/react';
@@ -38,31 +40,30 @@ export default function Navbar() {
 					alignItems={'center'}
 					justifyContent={'space-between'}
 				>
-					<Flex width="150px">
-						<Link href="#">
-							<a>Bookings.Com</a>
-						</Link>
-					</Flex>
 					<Flex height="30px" width="90px">
-						<img
-							src="/images/bookit_logo.png"
-							alt="Bookit"
-							width="70px"
-							height="25px"
-						/>
+						<NextLink href="/" passHref>
+							<Link>
+								<img
+									src="/images/bookit_logo.png"
+									alt="Bookit"
+									width="90px"
+									height="35px"
+								/>
+							</Link>
+						</NextLink>
 					</Flex>
 
 					<Flex alignItems={'center'}>
-						<Stack direction={'row'} spacing={7}>
-							<Link href="#">
-								<a>Profile</a>
-							</Link>
-							<Link href="#">
-								<a>Login</a>
-							</Link>
-							<Link href="#">
-								<a>Logout</a>
-							</Link>
+						<Stack direction={'row'} spacing={7} color="#cc0000">
+							<NextLink href="/" passHref>
+								<Link>Profile</Link>
+							</NextLink>
+							<NextLink href="/" passHref>
+								<Link>Login</Link>
+							</NextLink>
+							<NextLink href="/" passHref>
+								<Link href="#">Logout</Link>
+							</NextLink>
 							<Button onClick={toggleColorMode}>
 								{colorMode === 'light' ? (
 									<MoonIcon />
@@ -105,9 +106,7 @@ export default function Navbar() {
 										<MenuItem>Your Servers</MenuItem>
 										<MenuItem>Account Settings</MenuItem>
 										<MenuItem>
-											<a href="/api/auth/logout">
-												Logout
-											</a>
+											<a href="#">Logout</a>
 										</MenuItem>
 									</MenuList>
 								</Menu>

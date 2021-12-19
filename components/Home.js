@@ -1,38 +1,28 @@
-import { StarIcon, ArrowBackIcon } from '@chakra-ui/icons';
+import React, { useEffect } from 'react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import NextLink from 'next/link';
-import {
-	Text,
-	AspectRatio,
-	Button,
-	Center,
-	Spacer,
-	Flex,
-	Image,
-	Container,
-	Box,
-	Badge,
-	Link,
-	LinkBox,
-	LinkOverlay,
-	UnorderedList,
-	ListItem,
-	Stack,
-	Wrap,
-	WrapItem,
-	Grid,
-	GridItem,
-} from '@chakra-ui/react';
-// import data from '../utils/data';
-
-import { useSelector } from 'react-redux';
+import { Text, Container, Box, Link, Wrap } from '@chakra-ui/react';
 import RoomItem from './room/RoomItem';
 
+import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { clearErrors } from '../redux/actions/roomActions';
+
 export default function Home() {
-	const { rooms } = useSelector((state) => state.allRooms);
+	const dispatch = useDispatch();
+	const { rooms, error } = useSelector((state) => state.allRooms);
+
+	useEffect(() => {
+		if (error) {
+			toast.error(error);
+			dispatch(clearErrors);
+		}
+	}, []);
 
 	return (
 		<Container maxW="100%" overflow="hidden" align="center">
-			<Text mb="30px" mt="30px" fontSize={32}>
+			<Text color="#cc0000" mb="30px" mt="30px" fontSize={32}>
 				Stays in New York
 			</Text>
 			<Box marginBottom="20px" align="Start">
