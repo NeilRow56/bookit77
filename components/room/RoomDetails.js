@@ -83,16 +83,17 @@ const RoomDetails = () => {
 						>
 							Description
 						</Text>
-
-						<Text mt={2} color="gray.500">
-							{room.description}
-						</Text>
+						<Box width="625px">
+							<Text mt={2} color="gray.500">
+								{room.description}
+							</Text>
+						</Box>
 					</Box>
 
 					<Box
 						border="1px"
 						borderColor="gray.200"
-						width="600px"
+						width="320px"
 						borderRadius={15}
 					>
 						<Center mt={5}>

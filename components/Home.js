@@ -6,6 +6,8 @@ import NextLink from 'next/link';
 import {
 	Text,
 	Container,
+	Alert,
+	AlertIcon,
 	Box,
 	Link,
 	Wrap,
@@ -25,7 +27,7 @@ export default function Home() {
 	const { rooms, resPerPage, roomsCount, filteredRoomsCount, error } =
 		useSelector((state) => state.allRooms);
 
-	let { page = 1 } = router.query;
+	let { location, page = 1 } = router.query;
 	page = Number(page);
 
 	useEffect(() => {
@@ -39,28 +41,37 @@ export default function Home() {
 		router.push(`/?page=${pageNumber}`);
 	};
 
+	let count = roomsCount;
+	if (location) {
+		count = filteredRoomsCount;
+	}
+
 	return (
 		<>
 			<Container maxW="100%" overflow="hidden" align="center">
 				<Text color="#cc0000" mb="30px" mt="30px" fontSize={32}>
-					Stays in New York
+					{location ? `Rooms in ${location} ` : 'All Rooms'}
 				</Text>
-				<Box marginBottom="20px" align="Start">
-					<ArrowBackIcon color="secondary" />{' '}
-					<NextLink href="/" passHref>
+				<Flex marginBottom="20px" align="Start">
+					<ArrowBackIcon color="#cc0000" mt={1} mx={2} />{' '}
+					<NextLink href="/search" passHref>
 						<Link
-							color="secondary"
+							color="#cc0000"
 							style={{ textDecoration: 'none' }}
 						>
+							{' '}
 							Back to search
 						</Link>
 					</NextLink>
-				</Box>
+				</Flex>
 				<Wrap spacing="20px" justify="center">
 					{rooms && rooms.length === 0 ? (
-						<Box alert alert-danger>
-							<Text>No Rooms Found</Text>
-						</Box>
+						<Flex width="40%">
+							<Alert status="error" width="100%">
+								<AlertIcon />
+								No Rooms matching search criteria
+							</Alert>
+						</Flex>
 					) : (
 						rooms.map((room) => (
 							<RoomItem key={room._id} room={room} />
@@ -68,7 +79,7 @@ export default function Home() {
 					)}
 				</Wrap>
 				<br />
-				{resPerPage < roomsCount && (
+				{resPerPage < count && (
 					<Flex justifyContent="center">
 						<Pagination
 							activePage={page}

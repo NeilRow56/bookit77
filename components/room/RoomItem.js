@@ -71,7 +71,7 @@ function RoomItem({ room }) {
 					<Center>
 						<Button
 							size="sm"
-							bg="teal"
+							bg="#cc0000"
 							color="#fff"
 							mt={1}
 							variant="secondaryOutline"
@@ -80,8 +80,20 @@ function RoomItem({ room }) {
 						</Button>
 					</Center>
 					<Box display="flex" mt="2" alignItems="center">
-						<StarIcon />
-
+						<Box display="flex" mt="2" alignItems="center">
+							{Array(5)
+								.fill('')
+								.map((_, i) => (
+									<StarIcon
+										key={i}
+										color={
+											i < room.ratings
+												? '#f1c232'
+												: 'gray.300'
+										}
+									/>
+								))}
+						</Box>
 						<Box as="span" ml="2" color="gray.600" fontSize="sm">
 							<Text>{room.numOfReviews} Reviews</Text>
 						</Box>
