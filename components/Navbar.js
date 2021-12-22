@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import ClientOnly from './ClientOnly';
 import {
 	Box,
@@ -28,12 +29,15 @@ export default function Navbar() {
 	const { colorMode, toggleColorMode } = useColorMode();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
+	const router = useRouter();
+	const isActive = router.pathname === '/login';
+
 	return (
 		<>
 			<Box
 				bg={useColorModeValue('gray.100', 'gray.900')}
 				px={4}
-				width="100%"
+				width="100vw"
 			>
 				<Flex
 					h={16}
@@ -58,8 +62,13 @@ export default function Navbar() {
 							<NextLink href="/" passHref>
 								<Link>Profile</Link>
 							</NextLink>
-							<NextLink href="/" passHref>
-								<Link>Login</Link>
+							<NextLink href={'/register'} passHref>
+								<Link>Register</Link>
+							</NextLink>
+							<NextLink href={'/login'} passHref>
+								<Link color={isActive ? 'blue' : 'red'}>
+									Login
+								</Link>
 							</NextLink>
 							<NextLink href="/" passHref>
 								<Link href="#">Logout</Link>

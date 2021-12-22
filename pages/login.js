@@ -1,12 +1,12 @@
-import Search from '../components/room/Search';
+import Login from '../components/auth/Login';
 import Layout from '../components/Layout';
 import { Container } from '@chakra-ui/react';
 
-export default function SearchPage() {
+export default function LoginPage() {
 	return (
-		<Layout title="Search Rooms">
+		<Layout title="Login">
 			<Container>
-				<Search align="center" />
+				<Login align="center" />
 			</Container>
 		</Layout>
 	);
