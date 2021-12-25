@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth';
-
+import { getToken } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from '../../../models/user';
 import dbConnect from '../../../config/dbConnect';
@@ -44,18 +44,23 @@ export default NextAuth({
 		}),
 	],
 	callbacks: {
-		jwt: async (token, user) => {
-			user && (token.user = user);
+		// called when token is created
+		async jwt({ token, user }) {
+			if (user) {
+				// console.log(user);
+				token.user = user;
+			}
 			return Promise.resolve(token);
 		},
-		session: async (session, user) => {
-			session.user = user.user;
+
+		session: async ({ session, token }) => {
+			session.user = token.user;
 			return Promise.resolve(session);
 		},
 	},
-	secret: 'test',
+	secret: process.env.SECRET,
 	jwt: {
-		secret: 'test',
+		secret: process.env.SECRET,
 		encryption: true,
 	},
 });

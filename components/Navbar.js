@@ -19,11 +19,15 @@ import {
 	Spacer,
 	Text,
 	useColorMode,
+	VStack,
 	Center,
 } from '@chakra-ui/react';
 
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import React from 'react';
+import { MoonIcon, SunIcon, ArrowDownIcon } from '@chakra-ui/icons';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadUser } from '../redux/actions/userActions';
+import { signOut } from 'next-auth/react';
 
 export default function Navbar() {
 	const { colorMode, toggleColorMode } = useColorMode();
@@ -31,6 +35,19 @@ export default function Navbar() {
 
 	const router = useRouter();
 	const isActive = router.pathname === '/login';
+
+	const dispatch = useDispatch();
+
+	const { user, loading } = useSelector((state) => state.auth);
+
+	const logoutHandler = () => {
+		signOut();
+	};
+	useEffect(() => {
+		if (!user) {
+			dispatch(loadUser());
+		}
+	}, [dispatch]);
 
 	return (
 		<>
@@ -59,9 +76,6 @@ export default function Navbar() {
 
 					<Flex alignItems={'center'}>
 						<Stack direction={'row'} spacing={7} color="#cc0000">
-							<NextLink href="/" passHref>
-								<Link>Profile</Link>
-							</NextLink>
 							<NextLink href={'/register'} passHref>
 								<Link>Register</Link>
 							</NextLink>
@@ -81,44 +95,84 @@ export default function Navbar() {
 								)}
 							</Button>
 							<ClientOnly>
-								<Menu>
-									<MenuButton
-										as={Button}
-										rounded={'full'}
-										variant={'link'}
-										cursor={'pointer'}
-										minW={0}
-									>
-										<Avatar
-											size={'sm'}
-											src={
-												'https://avatars.dicebear.com/api/male/username.svg'
-											}
-										/>
-									</MenuButton>
-									<MenuList alignItems={'center'}>
-										<br />
-										<Center>
-											<Avatar
-												size={'2xl'}
-												src={
-													'https://avatars.dicebear.com/api/male/username.svg'
-												}
-											/>
-										</Center>
-										<br />
-										<Center>
-											<p>Username</p>
-										</Center>
-										<br />
-										<MenuDivider />
-										<MenuItem>Your Servers</MenuItem>
-										<MenuItem>Account Settings</MenuItem>
-										<MenuItem>
-											<a href="#">Logout</a>
-										</MenuItem>
-									</MenuList>
-								</Menu>
+								{user && (
+									<Menu>
+										<Flex>
+											<MenuButton
+												as={Button}
+												rounded={'full'}
+												variant={'link'}
+												cursor={'pointer'}
+												minW={40}
+												mx={5}
+												align="center"
+												color="#cc0000"
+											>
+												{/* <Avatar
+													size={'sm'}
+													src={
+														user.avatar &&
+														user.avatar.url
+													}
+													alt={user && user.name}
+												/> */}
+
+												<Flex>
+													<Text>
+														{user.name} Menu
+													</Text>
+													<ArrowDownIcon />
+												</Flex>
+											</MenuButton>
+										</Flex>
+										<MenuList alignItems={'center'}>
+											<br />
+											<Center>
+												<Avatar
+													size={'lg'}
+													src={
+														user.avatar &&
+														user.avatar.url
+													}
+													alt={user && user.name}
+												/>
+											</Center>
+											<br />
+											<Center>
+												<p>{user.name}</p>
+											</Center>
+											<br />
+											<MenuDivider />
+											<MenuItem>
+												<NextLink
+													href="/bookings/me"
+													passHref
+												>
+													<Link>My Bookings</Link>
+												</NextLink>
+											</MenuItem>
+											<MenuItem>
+												<NextLink
+													href="/me/update"
+													passHref
+												>
+													<Link>Profile</Link>
+												</NextLink>
+											</MenuItem>
+
+											<MenuItem>
+												<NextLink href="/" passHref>
+													<Link
+														onClick={logoutHandler}
+														color="#221100"
+													>
+														Logout
+													</Link>
+												</NextLink>
+											</MenuItem>
+										</MenuList>
+									</Menu>
+								)}
 							</ClientOnly>
 						</Stack>
 					</Flex>
