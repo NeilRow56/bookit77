@@ -101,7 +101,7 @@ const Login = () => {
 							Login
 						</Button>
 						<br />
-						<NextLink href="/" passHref>
+						<NextLink href="/register" passHref>
 							<Link color="blue.500">New User?</Link>
 						</NextLink>
 					</form>

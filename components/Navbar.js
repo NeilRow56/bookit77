@@ -84,7 +84,7 @@ export default function Navbar() {
 									Login
 								</Link>
 							</NextLink>
-							<NextLink href="/" passHref>
+							<NextLink href="/logout" passHref>
 								<Link href="#">Logout</Link>
 							</NextLink>
 							<Button onClick={toggleColorMode}>
@@ -118,7 +118,7 @@ export default function Navbar() {
 												/> */}
 
 												<Flex>
-													<Text>
+													<Text mx="auto">
 														{user.name} Menu
 													</Text>
 													<ArrowDownIcon />
