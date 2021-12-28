@@ -58,17 +58,21 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
 };
 
 // Generate password reset token
+// Generate password reset token
 userSchema.methods.getResetPasswordToken = function () {
-	//Generate Token
+	// Generate token
 	const resetToken = crypto.randomBytes(20).toString('hex');
+
 	// Hash and set to resetPasswordToken field
 	this.resetPasswordToken = crypto
 		.createHash('sha256')
 		.update(resetToken)
 		.digest('hex');
-	//Set token expire time
+
+	// Set token expire time
 	this.resetPasswordExpire = Date.now() + 30 * 60 * 1000;
 
 	return resetToken;
 };
+
 export default mongoose.models.User || mongoose.model('User', userSchema);

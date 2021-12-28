@@ -84,8 +84,10 @@ export default function Navbar() {
 									Login
 								</Link>
 							</NextLink>
-							<NextLink href="/logout" passHref>
-								<Link href="#">Logout</Link>
+							<NextLink href="/" passHref>
+								<Link onClick={logoutHandler} color="#cc0000">
+									Logout
+								</Link>
 							</NextLink>
 							<Button onClick={toggleColorMode}>
 								{colorMode === 'light' ? (

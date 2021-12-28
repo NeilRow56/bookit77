@@ -85,8 +85,8 @@ const Login = () => {
 								/>
 							</FormControl>
 							<br />
-							<NextLink href="/" passHref>
-								<Link color="#cc0000">Forgoten Password?</Link>
+							<NextLink href="/password/forgot" passHref>
+								<Link color="#cc0000">Forgotten Password?</Link>
 							</NextLink>
 						</ClientOnly>
 						<Button
