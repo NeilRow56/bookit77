@@ -27,7 +27,7 @@ import { MoonIcon, SunIcon, ArrowDownIcon } from '@chakra-ui/icons';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from '../redux/actions/userActions';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function Navbar() {
 	const { colorMode, toggleColorMode } = useColorMode();
@@ -36,9 +36,11 @@ export default function Navbar() {
 	const router = useRouter();
 	const isActive = router.pathname === '/login';
 
+	const { data: session, status } = useSession();
+	console.log('session', session);
 	const dispatch = useDispatch();
 
-	const { user, loading } = useSelector((state) => state.auth);
+	const { user, loading } = useSelector((state) => state.loadedUser);
 
 	const logoutHandler = () => {
 		signOut();
@@ -76,19 +78,27 @@ export default function Navbar() {
 
 					<Flex alignItems={'center'}>
 						<Stack direction={'row'} spacing={7} color="#cc0000">
-							<NextLink href={'/register'} passHref>
-								<Link>Register</Link>
-							</NextLink>
-							<NextLink href={'/login'} passHref>
-								<Link color={isActive ? 'blue' : 'red'}>
-									Login
-								</Link>
-							</NextLink>
-							<NextLink href="/" passHref>
-								<Link onClick={logoutHandler} color="#cc0000">
-									Logout
-								</Link>
-							</NextLink>
+							{!session ? (
+								<>
+									<NextLink href={'/register'} passHref>
+										<Link>Register</Link>
+									</NextLink>
+									<NextLink href={'/login'} passHref>
+										<Link color={isActive ? 'blue' : 'red'}>
+											Login
+										</Link>
+									</NextLink>
+								</>
+							) : (
+								<NextLink href="/" passHref>
+									<Link
+										onClick={logoutHandler}
+										color="#cc0000"
+									>
+										Logout
+									</Link>
+								</NextLink>
+							)}
 							<Button onClick={toggleColorMode}>
 								{colorMode === 'light' ? (
 									<MoonIcon />
@@ -97,7 +107,7 @@ export default function Navbar() {
 								)}
 							</Button>
 							<ClientOnly>
-								{user && (
+								{session && (
 									<Menu>
 										<Flex>
 											<MenuButton
@@ -110,20 +120,22 @@ export default function Navbar() {
 												align="center"
 												color="#cc0000"
 											>
-												{/* <Avatar
+												<Avatar
 													size={'sm'}
 													src={
-														user.avatar &&
-														user.avatar.url
+														session.user.avatar &&
+														session.user.avatar.url
 													}
-													alt={user && user.name}
-												/> */}
+													alt={
+														session.user &&
+														session.user.name
+													}
+												/>
 
 												<Flex>
 													<Text mx="auto">
-														{user.name} Menu
+														{session.user.name}
 													</Text>
-													<ArrowDownIcon />
 												</Flex>
 											</MenuButton>
 										</Flex>
@@ -133,15 +145,18 @@ export default function Navbar() {
 												<Avatar
 													size={'lg'}
 													src={
-														user.avatar &&
-														user.avatar.url
+														session.user.avatar &&
+														session.user.avatar.url
 													}
-													alt={user && user.name}
+													alt={
+														session.user &&
+														session.user.name
+													}
 												/>
 											</Center>
 											<br />
 											<Center>
-												<p>{user.name}</p>
+												<p>{session.user.name}</p>
 											</Center>
 											<br />
 											<MenuDivider />

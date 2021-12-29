@@ -45,7 +45,7 @@ export default NextAuth({
 	],
 	callbacks: {
 		// called when token is created
-		async jwt({ token, user }) {
+		jwt: async ({ token, user }) => {
 			if (user) {
 				// console.log(user);
 				token.user = user;
@@ -54,7 +54,10 @@ export default NextAuth({
 		},
 
 		session: async ({ session, token }) => {
-			session.user = token.user;
+			if (token) {
+				session.user = token.user;
+			}
+
 			return Promise.resolve(session);
 		},
 	},

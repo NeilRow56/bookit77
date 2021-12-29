@@ -51,7 +51,7 @@ export const loadUser = () => async (dispatch) => {
 	try {
 		dispatch({ type: LOAD_USER_REQUEST });
 
-		const { data } = await axios.get('/api/me');
+		const { data } = await axios.get('/api/meDetails');
 
 		dispatch({
 			type: LOAD_USER_SUCCESS,
@@ -76,7 +76,11 @@ export const updateProfile = (userData) => async (dispatch) => {
 			},
 		};
 
-		const { data } = await axios.put('/api/me/update', userData, config);
+		const { data } = await axios.put(
+			'/api/meDetails/update',
+			userData,
+			config
+		);
 
 		dispatch({
 			type: UPDATE_PROFILE_SUCCESS,
