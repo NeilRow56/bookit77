@@ -1,6 +1,9 @@
 import Head from 'next/head';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import RoomFeatures from './RoomFeatures';
+import DatePicker from 'react-datepicker';
+
+import 'react-datepicker/dist/react-datepicker.css';
 import { StarIcon, ArrowBackIcon } from '@chakra-ui/icons';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -19,8 +22,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { clearErrors } from '../../redux/actions/roomActions';
 
 const RoomDetails = () => {
+	const [checkInDate, setCheckInDate] = useState();
+	const [checkOutDate, setCheckOutDate] = useState();
+
 	const dispatch = useDispatch();
 	const { room, error } = useSelector((state) => state.roomDetails);
+
+	const onChange = (dates) => {
+		const [checkInDate, checkOutDate] = dates;
+		setCheckInDate(checkInDate);
+		setCheckOutDate(checkOutDate);
+
+		if (checkInDate && checkOutDate) {
+			console.log(checkInDate.toISOString(), checkOutDate.toISOString());
+		}
+	};
 
 	useEffect(() => {
 		if (error) {
@@ -33,7 +49,7 @@ const RoomDetails = () => {
 			<Head>
 				<title>{room.name}- BookIT</title>
 			</Head>
-			<Container maxWidth="900px">
+			<Container maxWidth="1100px">
 				<Heading>{room.name}</Heading>
 				<Flex>
 					<Text fontSize="2xl" color="#cc0000">
@@ -83,29 +99,47 @@ const RoomDetails = () => {
 						>
 							Description
 						</Text>
-						<Box width="625px">
+						<Box width="725px">
 							<Text mt={2} color="gray.500">
 								{room.description}
 							</Text>
 						</Box>
+						<br />
+						<RoomFeatures room={room} />
 					</Box>
 
 					<Box
 						border="1px"
 						borderColor="gray.200"
-						width="320px"
+						width="375px"
 						borderRadius={15}
 					>
-						<Center mt={5}>
+						<Center my={1}>
 							<Text fontWeight="bold">Price per night</Text>
 						</Center>
 
-						<Center>
+						<Center my={1}>
 							<Text fontWeight="bold">
 								£ {room.pricePerNight}
 							</Text>
 						</Center>
-
+						<hr />
+						<Center>
+							<Text color="#cc0000" my={3}>
+								Select Check In and Check Out dates
+							</Text>
+						</Center>
+						<Center>
+							<DatePicker
+								className="w-100"
+								selected={checkInDate}
+								onChange={onChange}
+								startDate={checkInDate}
+								endDate={checkOutDate}
+								selectsRange
+								inline
+							/>
+						</Center>
 						<Center>
 							<br />
 							<br />
@@ -118,7 +152,6 @@ const RoomDetails = () => {
 				</Box>
 
 				<br />
-				<RoomFeatures room={room} />
 			</Container>
 		</>
 	);

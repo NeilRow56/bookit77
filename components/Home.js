@@ -73,6 +73,7 @@ export default function Home() {
 							</Alert>
 						</Flex>
 					) : (
+						rooms &&
 						rooms.map((room) => (
 							<RoomItem key={room._id} room={room} />
 						))
