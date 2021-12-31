@@ -1,5 +1,4 @@
 import Booking from '../models/booking';
-
 import ErrorHandler from '../utils/errorHandler';
 import catchAsyncErrors from '../middlewares/catchAsyncErrors';
 

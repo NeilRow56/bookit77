@@ -49,6 +49,38 @@ const RoomDetails = () => {
 		}
 	};
 
+	const newBookingHandler = async () => {
+		const bookingData = {
+			room: router.query.id,
+			checkInDate,
+			checkOutDate,
+			daysOfStay,
+			amountPaid: 90,
+			paymentInfo: {
+				id: 'STRIPE_PAYMENT_ID',
+				status: 'STRIPE_PAYMENT_STATUS',
+			},
+		};
+
+		try {
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			};
+
+			const { data } = await axios.post(
+				'/api/bookings',
+				bookingData,
+				config
+			);
+
+			console.log(data);
+		} catch (error) {
+			console.log(error.response);
+		}
+	};
+
 	useEffect(() => {
 		if (error) {
 			toast.error(error);
@@ -155,7 +187,11 @@ const RoomDetails = () => {
 							<br />
 							<br />
 							<br />
-							<Button bg="#cc0000" color="#fff">
+							<Button
+								bg="#cc0000"
+								color="#fff"
+								onClick={newBookingHandler}
+							>
 								Pay Now
 							</Button>
 						</Center>
