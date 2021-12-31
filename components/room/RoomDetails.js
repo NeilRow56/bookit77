@@ -2,7 +2,7 @@ import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import RoomFeatures from './RoomFeatures';
 import DatePicker from 'react-datepicker';
-
+import { useRouter } from 'next/router';
 import 'react-datepicker/dist/react-datepicker.css';
 import { StarIcon, ArrowBackIcon } from '@chakra-ui/icons';
 import Image from 'next/image';
@@ -20,12 +20,16 @@ import { Carousel } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearErrors } from '../../redux/actions/roomActions';
+import axios from 'axios';
 
 const RoomDetails = () => {
 	const [checkInDate, setCheckInDate] = useState();
 	const [checkOutDate, setCheckOutDate] = useState();
+	const [daysOfStay, setDaysOfStay] = useState();
 
 	const dispatch = useDispatch();
+	const router = useRouter();
+
 	const { room, error } = useSelector((state) => state.roomDetails);
 
 	const onChange = (dates) => {
@@ -34,7 +38,14 @@ const RoomDetails = () => {
 		setCheckOutDate(checkOutDate);
 
 		if (checkInDate && checkOutDate) {
-			console.log(checkInDate.toISOString(), checkOutDate.toISOString());
+			//Calculate days of stay
+			const days = Math.floor(
+				(new Date(checkOutDate) - new Date(checkInDate)) / 86400000 + 1
+			);
+
+			setDaysOfStay(days);
+
+			console.log(days);
 		}
 	};
 
