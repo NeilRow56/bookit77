@@ -8,6 +8,10 @@ import { StarIcon, ArrowBackIcon } from '@chakra-ui/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
+	Alert,
+	AlertIcon,
+	AlertTitle,
+	AlertDescription,
 	Text,
 	Button,
 	Center,
@@ -20,6 +24,12 @@ import { Carousel } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearErrors } from '../../redux/actions/roomActions';
+import {
+	checkBooking,
+	getBookedDates,
+} from '../../redux/actions/bookingActions';
+import { CHECK_BOOKING_RESET } from '../../redux/constants/bookingConstants';
+
 import axios from 'axios';
 
 const RoomDetails = () => {
@@ -30,24 +40,45 @@ const RoomDetails = () => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 
+	const { dates } = useSelector((state) => state.bookedDates);
+
+	const { user } = useSelector((state) => state.loadedUser);
 	const { room, error } = useSelector((state) => state.roomDetails);
+	const { available, loading: bookingLoading } = useSelector(
+		(state) => state.checkBooking
+	);
+
+	const excludedDates = [];
+	dates.forEach((date) => {
+		excludedDates.push(new Date(date));
+	});
 
 	const onChange = (dates) => {
 		const [checkInDate, checkOutDate] = dates;
+
 		setCheckInDate(checkInDate);
 		setCheckOutDate(checkOutDate);
 
 		if (checkInDate && checkOutDate) {
-			//Calculate days of stay
+			// Calclate days of stay
+
 			const days = Math.floor(
 				(new Date(checkOutDate) - new Date(checkInDate)) / 86400000 + 1
 			);
 
 			setDaysOfStay(days);
 
-			console.log(days);
+			dispatch(
+				checkBooking(
+					id,
+					checkInDate.toISOString(),
+					checkOutDate.toISOString()
+				)
+			);
 		}
 	};
+
+	const { id } = router.query;
 
 	const newBookingHandler = async () => {
 		const bookingData = {
@@ -82,11 +113,12 @@ const RoomDetails = () => {
 	};
 
 	useEffect(() => {
+		dispatch(getBookedDates(id));
 		if (error) {
 			toast.error(error);
 			dispatch(clearErrors);
 		}
-	}, []);
+	}, [dispatch, id]);
 	return (
 		<>
 			<Head>
@@ -179,21 +211,64 @@ const RoomDetails = () => {
 								onChange={onChange}
 								startDate={checkInDate}
 								endDate={checkOutDate}
+								minDate={new Date()}
+								excludeDates={excludedDates}
 								selectsRange
 								inline
 							/>
 						</Center>
+						{available === true && (
+							<Alert
+								status="success"
+								alignItems="center"
+								justifyContent="center"
+								textAlign="center"
+								borderRadius="10px"
+							>
+								<AlertIcon />
+								Room is available.
+							</Alert>
+						)}
+
+						{available === false && (
+							<Alert
+								status="error"
+								alignItems="center"
+								justifyContent="center"
+								textAlign="center"
+								borderRadius="10px"
+							>
+								<AlertIcon />
+								Room not available. Try different dates.
+							</Alert>
+						)}
+
+						{available && !user && (
+							<Alert
+								status="error"
+								alignItems="center"
+								justifyContent="center"
+								textAlign="center"
+								borderRadius="10px"
+							>
+								<AlertIcon />
+								Login to book a room.
+							</Alert>
+						)}
+
 						<Center>
 							<br />
 							<br />
 							<br />
-							<Button
-								bg="#cc0000"
-								color="#fff"
-								onClick={newBookingHandler}
-							>
-								Pay Now
-							</Button>
+							{available && user && (
+								<Button
+									bg="#cc0000"
+									color="#fff"
+									onClick={newBookingHandler}
+								>
+									Book Now
+								</Button>
+							)}
 						</Center>
 					</Box>
 				</Box>
