@@ -96,5 +96,40 @@ const checkBookedDatesOfRoom = catchAsyncErrors(async (req, res) => {
 		bookedDates,
 	});
 });
+// Get all bookings of current user =>   /api/bookings/mybookings
 
-export { newBooking, checkRoomBookingAvailability, checkBookedDatesOfRoom };
+const myBookings = catchAsyncErrors(async (req, res) => {
+	const bookings = await Booking.find({ user: req.user._id });
+
+	res.status(200).json({
+		success: true,
+		bookings,
+	});
+});
+
+// Get booking details =>   /api/bookings/:id
+
+const getBookingDetails = catchAsyncErrors(async (req, res) => {
+	const booking = await Booking.findById(req.query.id)
+		.populate({
+			path: 'room',
+			select: 'name pricePerNight images',
+		})
+		.populate({
+			path: 'user',
+			select: 'name email',
+		});
+
+	res.status(200).json({
+		success: true,
+		booking,
+	});
+});
+
+export {
+	newBooking,
+	checkRoomBookingAvailability,
+	checkBookedDatesOfRoom,
+	myBookings,
+	getBookingDetails,
+};
