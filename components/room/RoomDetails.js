@@ -29,13 +29,14 @@ import {
 	getBookedDates,
 } from '../../redux/actions/bookingActions';
 import { CHECK_BOOKING_RESET } from '../../redux/constants/bookingConstants';
-
+import getStripe from '../../utils/getStripe';
 import axios from 'axios';
 
 const RoomDetails = () => {
 	const [checkInDate, setCheckInDate] = useState();
 	const [checkOutDate, setCheckOutDate] = useState();
 	const [daysOfStay, setDaysOfStay] = useState();
+	const [paymentLoading, setPaymentLoading] = useState(false);
 
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -112,13 +113,40 @@ const RoomDetails = () => {
 		}
 	};
 
+	const bookRoom = async (id, pricePerNight) => {
+		setPaymentLoading(true);
+
+		const amount = pricePerNight * daysOfStay;
+
+		try {
+			const link = `/api/checkout_session/${id}?checkInDate=${checkInDate.toISOString()}&checkOutDate=${checkOutDate.toISOString()}&daysOfStay=${daysOfStay}`;
+
+			const { data } = await axios.get(link, { params: { amount } });
+
+			const stripe = await getStripe();
+
+			// Redirect to checkout
+			stripe.redirectToCheckout({ sessionId: data.id });
+
+			setPaymentLoading(false);
+		} catch (error) {
+			setPaymentLoading(false);
+			console.log(error);
+			toast.error(error.message);
+		}
+	};
+
 	useEffect(() => {
 		dispatch(getBookedDates(id));
-		if (error) {
-			toast.error(error);
-			dispatch(clearErrors);
-		}
+
+		toast.error(error);
+		dispatch(clearErrors());
+
+		return () => {
+			dispatch({ type: CHECK_BOOKING_RESET });
+		};
 	}, [dispatch, id]);
+
 	return (
 		<>
 			<Head>
@@ -264,9 +292,16 @@ const RoomDetails = () => {
 								<Button
 									bg="#cc0000"
 									color="#fff"
-									onClick={newBookingHandler}
+									onClick={() =>
+										bookRoom(room._id, room.pricePerNight)
+									}
+									disabled={
+										bookingLoading || paymentLoading
+											? true
+											: false
+									}
 								>
-									Book Now
+									Pay - £ {daysOfStay * room.pricePerNight}
 								</Button>
 							)}
 						</Center>
