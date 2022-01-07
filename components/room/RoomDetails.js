@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import RoomFeatures from './RoomFeatures';
+import NewReview from '../review/NewReview';
+import ListReviews from '../review/ListReviews';
 import DatePicker from 'react-datepicker';
 import { useRouter } from 'next/router';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -309,6 +311,14 @@ const RoomDetails = () => {
 				</Box>
 
 				<br />
+				<NewReview />
+				{room.reviews && room.reviews.length > 0 ? (
+					<ListReviews reviews={room.reviews} />
+				) : (
+					<p>
+						<b>No Reviews for this room</b>
+					</p>
+				)}
 			</Container>
 		</>
 	);
