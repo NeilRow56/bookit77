@@ -160,6 +160,46 @@ export default function Navbar() {
 											</Center>
 											<br />
 											<MenuDivider />
+											{session.user.role === 'admin' && (
+												<>
+													<MenuItem>
+														<NextLink
+															href="/admin/rooms"
+															passHref
+														>
+															<Link>Rooms</Link>
+														</NextLink>
+													</MenuItem>
+													<MenuItem>
+														<NextLink
+															href="/admin/bookings"
+															passHref
+														>
+															<Link>
+																Bookings
+															</Link>
+														</NextLink>
+													</MenuItem>
+													<MenuItem>
+														<NextLink
+															href="/admin/users"
+															passHref
+														>
+															<Link>Users</Link>
+														</NextLink>
+													</MenuItem>
+													<MenuItem>
+														<NextLink
+															href="/admin/reviews"
+															passHref
+														>
+															<Link>Reviews</Link>
+														</NextLink>
+													</MenuItem>
+													<hr />
+												</>
+											)}
+
 											<MenuItem>
 												<NextLink
 													href="/bookings/me"
