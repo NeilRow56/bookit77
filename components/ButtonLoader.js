@@ -5,7 +5,7 @@ function ButtonLoader() {
 	return (
 		<Button
 			isLoading
-			loadingText="Submitting"
+			loadingText="Loading"
 			colorScheme="teal"
 			variant="outline"
 		></Button>

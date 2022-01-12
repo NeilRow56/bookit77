@@ -15,6 +15,12 @@ import {
 	ADMIN_ROOMS_REQUEST,
 	ADMIN_ROOMS_SUCCESS,
 	ADMIN_ROOMS_FAIL,
+	NEW_ROOM_REQUEST,
+	NEW_ROOM_SUCCESS,
+	NEW_ROOM_FAIL,
+	UPDATE_ROOM_REQUEST,
+	UPDATE_ROOM_SUCCESS,
+	UPDATE_ROOM_FAIL,
 	CLEAR_ERRORS,
 } from '../constants/roomConstants';
 
@@ -50,7 +56,15 @@ export const getRoomDetails = (req, id) => async (dispatch) => {
 	try {
 		const { origin } = absoluteUrl(req);
 
-		const { data } = await axios.get(`${origin}/api/rooms/${id}`);
+		let url;
+
+		if (req) {
+			url = `${origin}/api/rooms/${id}`;
+		} else {
+			url = `/api/rooms/${id}`;
+		}
+
+		const { data } = await axios.get(url);
 
 		dispatch({
 			type: ROOM_DETAILS_SUCCESS,
@@ -105,6 +119,56 @@ export const newReview = (reviewData) => async (dispatch) => {
 	} catch (error) {
 		dispatch({
 			type: NEW_REVIEW_FAIL,
+			payload: error.response.data.message,
+		});
+	}
+};
+// Update Room
+
+export const updateRoom = (id, roomData) => async (dispatch) => {
+	try {
+		dispatch({ type: UPDATE_ROOM_REQUEST });
+
+		const config = {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
+
+		const { data } = await axios.put(`/api/rooms/${id}`, roomData, config);
+
+		dispatch({
+			type: UPDATE_ROOM_SUCCESS,
+			payload: data.success,
+		});
+	} catch (error) {
+		dispatch({
+			type: UPDATE_ROOM_FAIL,
+			payload: error.response.data.message,
+		});
+	}
+};
+// New Room
+
+export const newRoom = (roomData) => async (dispatch) => {
+	try {
+		dispatch({ type: NEW_ROOM_REQUEST });
+
+		const config = {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
+
+		const { data } = await axios.post(`/api/rooms`, roomData, config);
+
+		dispatch({
+			type: NEW_ROOM_SUCCESS,
+			payload: data,
+		});
+	} catch (error) {
+		dispatch({
+			type: NEW_ROOM_FAIL,
 			payload: error.response.data.message,
 		});
 	}

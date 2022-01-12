@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import ButtonLoader from '../../components/ButtonLoader';
 import { MDBDataTable } from 'mdbreact';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
@@ -9,9 +10,7 @@ import {
 	Link,
 	Center,
 	Box,
-	Skeleton,
-	SkeletonCircle,
-	SkeletonText,
+	Button,
 } from '@chakra-ui/react';
 
 import { EditIcon, ViewIcon, DeleteIcon } from '@chakra-ui/icons';
@@ -119,12 +118,16 @@ const AllRooms = () => {
 	return (
 		<Container maxW="container.xl">
 			{loading ? (
-				<Box padding="6" boxShadow="lg" bg="#white">
-					<SkeletonCircle size="10" />
-					<SkeletonText mt="4" noOfLines={4} spacing="4" />
-				</Box>
+				<ButtonLoader />
 			) : (
 				<>
+					<Box align="right" mr={5}>
+						<NextLink href={'/admin/rooms/new'} passHref>
+							<Button bg="#cc0000" color="#fff">
+								Create New Room
+							</Button>
+						</NextLink>
+					</Box>
 					<Center>
 						<Text fontWeight="bold" fontSize="24px">
 							{`${rooms && rooms.length} Rooms`}
