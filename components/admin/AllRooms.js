@@ -16,13 +16,17 @@ import {
 import { EditIcon, ViewIcon, DeleteIcon } from '@chakra-ui/icons';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAdminRooms } from '../../redux/actions/roomActions';
+import { getAdminRooms, deleteRoom } from '../../redux/actions/roomActions';
+import { DELETE_ROOM_RESET } from '../../redux/constants/roomConstants';
 
 const AllRooms = () => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 
 	const { loading, error, rooms } = useSelector((state) => state.allRooms);
+	const { error: deleteError, isDeleted } = useSelector(
+		(state) => state.room
+	);
 
 	useEffect(() => {
 		dispatch(getAdminRooms());
@@ -31,7 +35,17 @@ const AllRooms = () => {
 			toast.error(error);
 			dispatch(clearErrors());
 		}
-	}, [dispatch]);
+
+		if (deleteError) {
+			toast.error(deleteError);
+			dispatch(clearErrors());
+		}
+
+		if (isDeleted) {
+			router.push('/admin/rooms');
+			dispatch({ type: DELETE_ROOM_RESET });
+		}
+	}, [dispatch, deleteError, isDeleted]);
 
 	const setRooms = () => {
 		const data = {
@@ -98,6 +112,7 @@ const AllRooms = () => {
 								aria-label="delete icon"
 								bg="red.600"
 								mx={2}
+								onClick={() => deleteRoomHandler(room._id)}
 								icon={
 									<DeleteIcon
 										bg="red.600"
@@ -113,6 +128,10 @@ const AllRooms = () => {
 			});
 
 		return data;
+	};
+
+	const deleteRoomHandler = (id) => {
+		dispatch(deleteRoom(id));
 	};
 
 	return (

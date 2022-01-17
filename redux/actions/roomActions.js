@@ -21,6 +21,10 @@ import {
 	UPDATE_ROOM_REQUEST,
 	UPDATE_ROOM_SUCCESS,
 	UPDATE_ROOM_FAIL,
+	DELETE_ROOM_REQUEST,
+	DELETE_ROOM_RESET,
+	DELETE_ROOM_SUCCESS,
+	DELETE_ROOM_FAIL,
 	CLEAR_ERRORS,
 } from '../constants/roomConstants';
 
@@ -123,6 +127,26 @@ export const newReview = (reviewData) => async (dispatch) => {
 		});
 	}
 };
+// Delete Room
+
+export const deleteRoom = (id) => async (dispatch) => {
+	try {
+		dispatch({ type: DELETE_ROOM_REQUEST });
+
+		const { data } = await axios.delete(`/api/rooms/${id}`);
+
+		dispatch({
+			type: DELETE_ROOM_SUCCESS,
+			payload: data.success,
+		});
+	} catch (error) {
+		dispatch({
+			type: DELETE_ROOM_FAIL,
+			payload: error.response.data.message,
+		});
+	}
+};
+
 // Update Room
 
 export const updateRoom = (id, roomData) => async (dispatch) => {

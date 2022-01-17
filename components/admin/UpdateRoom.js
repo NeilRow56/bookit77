@@ -91,6 +91,7 @@ function UpdateRoom() {
 		}
 
 		if (isUpdated) {
+			dispatch(getRoomDetails('', id));
 			router.push('/admin/rooms');
 			dispatch({ type: UPDATE_ROOM_RESET });
 		}

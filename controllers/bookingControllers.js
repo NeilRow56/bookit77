@@ -1,6 +1,8 @@
 import Booking from '../models/booking';
+
 import ErrorHandler from '../utils/errorHandler';
 import catchAsyncErrors from '../middlewares/catchAsyncErrors';
+
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 
@@ -34,7 +36,7 @@ const newBooking = catchAsyncErrors(async (req, res) => {
 	});
 });
 
-// Check room booking availability   =>   /api/bookings/check
+// Create new booking   =>   /api/bookings/check
 const checkRoomBookingAvailability = catchAsyncErrors(async (req, res) => {
 	let { roomId, checkInDate, checkOutDate } = req.query;
 
@@ -57,7 +59,7 @@ const checkRoomBookingAvailability = catchAsyncErrors(async (req, res) => {
 		],
 	});
 
-	// Check if there is any booking availability
+	// Check if there is any booking available
 	let isAvailable;
 
 	if (bookings && bookings.length === 0) {
@@ -71,8 +73,8 @@ const checkRoomBookingAvailability = catchAsyncErrors(async (req, res) => {
 		isAvailable,
 	});
 });
-// Check booked dates of a room =>   /api/bookings/check_booked_dates
 
+// Check booked dates of a room   =>   /api/bookings/check_booked_dates
 const checkBookedDatesOfRoom = catchAsyncErrors(async (req, res) => {
 	const { roomId } = req.query;
 
@@ -80,14 +82,21 @@ const checkBookedDatesOfRoom = catchAsyncErrors(async (req, res) => {
 
 	let bookedDates = [];
 
+	const timeDiffernece = moment().utcOffset() / 60;
+
 	bookings.forEach((booking) => {
-		const range = moment.range(
-			moment(booking.checkInDate),
-			moment(booking.checkOutDate)
+		const checkInDate = moment(booking.checkInDate).add(
+			timeDiffernece,
+			'hours'
+		);
+		const checkOutDate = moment(booking.checkOutDate).add(
+			timeDiffernece,
+			'hours'
 		);
 
-		const dates = Array.from(range.by('day'));
+		const range = moment.range(moment(checkInDate), moment(checkOutDate));
 
+		const dates = Array.from(range.by('day'));
 		bookedDates = bookedDates.concat(dates);
 	});
 
@@ -96,8 +105,8 @@ const checkBookedDatesOfRoom = catchAsyncErrors(async (req, res) => {
 		bookedDates,
 	});
 });
-// Get all bookings of current user =>   /api/bookings/mybookings
 
+// Get all bookings of current user   =>   /api/bookings/me
 const myBookings = catchAsyncErrors(async (req, res) => {
 	const bookings = await Booking.find({ user: req.user._id })
 		.populate({
@@ -115,8 +124,7 @@ const myBookings = catchAsyncErrors(async (req, res) => {
 	});
 });
 
-// Get booking details =>   /api/bookings/:id
-
+// Get booking details   =>   /api/bookings/:id
 const getBookingDetails = catchAsyncErrors(async (req, res) => {
 	const booking = await Booking.findById(req.query.id)
 		.populate({
@@ -134,10 +142,45 @@ const getBookingDetails = catchAsyncErrors(async (req, res) => {
 	});
 });
 
+// Get all bookings - ADMIN   =>   /api/admin/bookings
+const allAdminBookings = catchAsyncErrors(async (req, res) => {
+	const bookings = await Booking.find()
+		.populate({
+			path: 'room',
+			select: 'name pricePerNight images',
+		})
+		.populate({
+			path: 'user',
+			select: 'name email',
+		});
+
+	res.status(200).json({
+		success: true,
+		bookings,
+	});
+});
+
+// Delete booking - ADMIN   =>   /api/admin/bookings/id
+const deleteBooking = catchAsyncErrors(async (req, res, next) => {
+	const booking = await Booking.findById(req.query.id);
+
+	if (!booking) {
+		return next(new ErrorHandler('Booking not found with this ID', 404));
+	}
+
+	await booking.remove();
+
+	res.status(200).json({
+		success: true,
+	});
+});
+
 export {
 	newBooking,
 	checkRoomBookingAvailability,
 	checkBookedDatesOfRoom,
 	myBookings,
 	getBookingDetails,
+	allAdminBookings,
+	deleteBooking,
 };

@@ -14,7 +14,7 @@ export default function RegisterPage() {
 }
 export async function getServerSideProps(context) {
 	const session = await getSession({ req: context.req });
-	if (!session) {
+	if (session) {
 		return {
 			redirect: {
 				destination: '/',

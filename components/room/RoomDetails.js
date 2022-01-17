@@ -182,7 +182,7 @@ const RoomDetails = () => {
 					{room.images &&
 						room.images.map((image) => (
 							<Carousel.Item key={image.public_id}>
-								<div style={{ width: '100%', height: '540px' }}>
+								<div style={{ width: '100%', height: '640px' }}>
 									<Image
 										className="d-block m-auto"
 										src={image.url}

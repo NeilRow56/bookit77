@@ -24,6 +24,7 @@ function BookingDetails() {
 	const dispatch = useDispatch();
 
 	const { booking, error } = useSelector((state) => state.bookingDetails);
+	const { user } = useSelector((state) => state.loadedUser);
 
 	useEffect(() => {
 		if (error) {
@@ -31,6 +32,9 @@ function BookingDetails() {
 			dispatch(clearErrors());
 		}
 	}, [dispatch]);
+
+	const isPaid =
+		booking && booking.paymentInfo.status === 'paid' ? true : false;
 
 	return (
 		<Flex width="full" align="center" justifyContent="center">
@@ -91,9 +95,47 @@ function BookingDetails() {
 							<br />
 							<hr />
 							<br />
-							<Text fontSize="2xl" fontWeight="bold">
-								Payment Status:
-							</Text>
+							<Flex>
+								<Text fontSize="2xl" fontWeight="bold" mx={2}>
+									Payment Status:
+								</Text>
+
+								{isPaid ? (
+									<Text
+										fontSize="2xl"
+										fontWeight="bold"
+										color="green.600"
+									>
+										{isPaid ? 'Paid' : ''}
+									</Text>
+								) : (
+									<Text
+										fontSize="2xl"
+										fontWeight="bold"
+										color="red.600"
+									>
+										{isPaid ? 'Paid' : 'Not Paid'}
+									</Text>
+								)}
+							</Flex>
+							{user && user.role === 'admin' && (
+								<Flex>
+									<Text
+										fontSize="2xl"
+										fontWeight="bold"
+										mx={2}
+									>
+										Stripe Payment ID:
+									</Text>
+									<Text
+										fontSize="2xl"
+										fontWeight="bold"
+										color="#cc0000"
+									>
+										{booking.paymentInfo.id}
+									</Text>
+								</Flex>
+							)}
 							<br />
 							<hr />
 							<br />
