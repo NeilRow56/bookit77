@@ -1,17 +1,21 @@
 import { combineReducers } from 'redux';
+
 import {
 	allRoomsReducer,
-	newRoomReducer,
 	roomDetailsReducer,
 	newReviewReducer,
 	checkReviewReducer,
+	newRoomReducer,
 	roomReducer,
 } from './roomReducers';
+
 import {
 	authReducer,
 	userReducer,
 	loadedUserReducer,
 	forgotPasswordReducer,
+	allUsersReducer,
+	userDetailsReducer,
 } from './userReducers';
 
 import {
@@ -24,18 +28,20 @@ import {
 
 const reducer = combineReducers({
 	allRooms: allRoomsReducer,
-	roomDetails: roomDetailsReducer,
 	newRoom: newRoomReducer,
+	roomDetails: roomDetailsReducer,
 	room: roomReducer,
 	auth: authReducer,
 	user: userReducer,
 	loadedUser: loadedUserReducer,
+	allUsers: allUsersReducer,
+	userDetails: userDetailsReducer,
 	forgotPassword: forgotPasswordReducer,
 	checkBooking: checkBookingReducer,
 	bookedDates: bookedDatesReducer,
 	bookings: bookingsReducer,
-	bookingDetails: bookingDetailsReducer,
 	booking: bookingReducer,
+	bookingDetails: bookingDetailsReducer,
 	newReview: newReviewReducer,
 	checkReview: checkReviewReducer,
 });
