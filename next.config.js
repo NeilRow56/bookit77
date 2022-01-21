@@ -3,6 +3,9 @@ module.exports = {
 
 	env: {
 		DB_LOCAL_URI: process.env.DB_LOCAL_URI,
+		DB_URI: process.env.DB_URI,
+
+		NEXTAUTH_URL: process.env.NEXTAUTH_URL,
 
 		STRIPE_API_KEY: process.env.STRIPE_API_KEY,
 		STRIPE_API_SECRET: process.env.STRIPE_SECRET_KEY,
